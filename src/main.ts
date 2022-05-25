@@ -23,6 +23,8 @@ async function bootstrap() {
    const port = configService.get<System>(Env.SYSTEM).port
    const origin = configService.get<System>(Env.SYSTEM).origin
 
+   logger.log(origin, 'Origin')
+
    app.setGlobalPrefix('api', {
       exclude: [configService.get<System>(Env.SYSTEM).graphql_path],
    })
