@@ -1,0 +1,282 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+   provider = "postgresql"
+   url      = env("DATABASE_URL")
+}
+
+generator client {
+   provider        = "prisma-client-js"
+   previewFeatures = ["fullTextSearch", "extendedIndexes"]
+}
+
+generator nestgraphql {
+   provider = "node node_modules/prisma-nestjs-graphql"
+   output   = "../src/generated/prisma-nestjs-graphql"
+
+   // Config options
+   //   reExport                              = All
+   useInputType_WhereInput_ALL = "WhereInput"
+   emitSingle                  = true
+   noTypeId                    = true
+   purgeOutput                 = true
+
+   // import * as Validator from 'class-validator'
+   fields_Validator_from  = "class-validator"
+   fields_Validator_input = true
+
+   // import * as Scalars from 'graphql-scalars'
+   fields_Scalars_from   = "graphql-scalars"
+   fields_Scalars_input  = true
+   fields_Scalars_output = true
+
+   // import * as TD from '~/typedefs'
+   fields_TD_from   = "~/graphql/typedefs"
+   fields_TD_input  = true
+   fields_TD_output = true
+
+   // import { GraphQLDecimal } from 'prisma-graphql-type-decimal'
+   //   fields_GraphQLDecimal_from          = "prisma-graphql-type-decimal"
+   //   fields_GraphQLDecimal_defaultImport = "{ GraphQLDecimal }"
+
+
+   // import { Prisma } from '@prisma/client'
+   //   fields_Prisma_from          = "@prisma/client"
+   //   fields_Prisma_defaultImport = "{ Prisma }"
+}
+
+enum Gender {
+   MALE
+   FEMALE
+}
+
+enum Role {
+   ADMIN
+   STAFF
+}
+
+enum OS {
+   FREEDOS
+   WINDOWS
+   MACOS
+   LINUX
+   ANDROID
+}
+
+enum Rank {
+   ONE
+   TWO
+   THREE
+   FOUR
+   FIVE
+}
+
+enum MimeType {
+   gif
+   jpeg
+   pipeg
+   png
+   svg
+}
+
+model Person {
+   /// @FieldType('Scalars.GraphQLUUID')
+   id        String    @id @default(uuid()) @db.Uuid
+   /// @Validator.Length(1, 60)
+   fullname  String    @db.VarChar(60)
+   gender    Gender    @default(MALE)
+   /// @FieldType('Scalars.GraphQLPhoneNumber')
+   phone     String    @unique @db.VarChar(15)
+   /// @FieldType('Scalars.GraphQLEmailAddress')
+   /// @Validator.MaxLength(30)
+   email     String?   @unique(sort: Asc) @db.VarChar(30)
+   /// @Validator.MaxLength(255)
+   address   String    @default("None") @db.VarChar(255)
+   user      User?
+   customer  Customer?
+   comments  Comment[]
+   createdAt DateTime  @default(now()) @map("created_at")
+   updatedAt DateTime  @updatedAt @map("updated_at")
+}
+
+model Customer {
+   /// @FieldType('Scalars.GraphQLUUID')
+   id        String     @id @db.Uuid
+   profile   Person     @relation(fields: [id], references: [id])
+   purchases Purchase[]
+   createdAt DateTime   @default(now()) @map("created_at")
+   updatedAt DateTime   @updatedAt @map("updated_at")
+}
+
+model User {
+   /// @FieldType('Scalars.GraphQLUUID')
+   id        String   @id @db.Uuid
+   profile   Person   @relation(fields: [id], references: [id])
+   /// @HideField({ output: true })
+   /// @Validator.Length(1, 20)
+   password  String   @db.Char(60)
+   role      Role     @default(STAFF)
+   posts     Post[]
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Laptop {
+   id                  Int        @id @default(autoincrement())
+   /// @Validator.MaxLength(255)
+   title               String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   brand               String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   model               String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   material            String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   display             String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   cpu                 String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   ram                 String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   graphicCard         String     @default("None") @map("graphic_card") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   ports               String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   wifi                String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   storage             String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   webcam              String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   fans                String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   speakers            String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   keyboard            String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   security            String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   adapter             String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   battery             String     @default("None") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   specialFeatures     String     @default("None") @map("special_features") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   dimensionsAndWeight String     @default("None") @map("dimensions_and_weight") @db.VarChar(255)
+   /// @Validator.MaxLength(255)
+   origin              String     @default("None") @db.VarChar(255)
+   releaseDate         DateTime   @default(now()) @map("release_date")
+   sold                Int        @default(0)
+   stopSelling         Boolean    @default(false) @map("stop_selling")
+   os                  OS         @default(WINDOWS)
+   priceMap            PriceMap?  @relation(fields: [priceMapId], references: [id])
+   priceMapId          Int?       @map("price_map_id")
+   discounts           Discount[]
+   defaultImage        Image?     @relation("LaptopToDefaultImage", fields: [defaultImageId], references: [id])
+   defaultImageId      Int?       @map("default_image_id")
+   purchases           Purchase[]
+   posts               Post[]
+   comments            Comment[]
+   images              Image[]
+   videos              Video[]
+   createdAt           DateTime   @default(now()) @map("created_at")
+   updatedAt           DateTime   @updatedAt @map("updated_at")
+}
+
+model Comment {
+   id        Int       @id @default(autoincrement())
+   rank      Rank      @default(FIVE)
+   /// @Validator.MaxLength(400)
+   content   String    @db.VarChar(400)
+   author    Person    @relation(fields: [authorId], references: [id])
+   /// @FieldType('Scalars.GraphQLUUID')
+   authorId  String    @map("author_id") @db.Uuid
+   isStaff   Boolean   @default(false) @map("is_staff")
+   laptop    Laptop    @relation(fields: [laptopId], references: [id])
+   laptopId  Int       @map("laptop_id")
+   comment   Comment?  @relation("CommentToComment", fields: [commentId], references: [id])
+   commentId Int?      @map("comment_id")
+   comments  Comment[] @relation("CommentToComment")
+   createdAt DateTime  @default(now()) @map("created_at")
+   updatedAt DateTime  @updatedAt @map("updated_at")
+}
+
+model PriceMap {
+   id        Int      @id @default(autoincrement())
+   price     Decimal  @unique @default(0) @db.Money
+   laptops   Laptop[]
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Discount {
+   id        Int      @id @default(autoincrement())
+   value     Float    @unique @default(0) @db.Real
+   laptops   Laptop[]
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt @map("updated_at")
+}
+
+model Purchase {
+   id         Int      @id @default(autoincrement())
+   customer   Customer @relation(fields: [customerId], references: [id])
+   /// @FieldType('Scalars.GraphQLUUID')
+   customerId String   @map("customer_id") @db.Uuid
+   laptops    Laptop[]
+   createdAt  DateTime @default(now()) @map("created_at")
+   updatedAt  DateTime @updatedAt @map("updated_at")
+}
+
+model Passage {
+   id      Int    @id @default(autoincrement())
+   /// @Validator.MaxLength(250)
+   header  String @db.VarChar(255)
+   content String
+   post    Post   @relation(fields: [postId], references: [id])
+   postId  Int    @map("post_id")
+}
+
+model Post {
+   id             Int       @id @default(autoincrement())
+   /// @Validator.MaxLength(255)
+   title          String    @db.VarChar(255)
+   passages       Passage[]
+   laptops        Laptop[]
+   author         User      @relation(fields: [authorId], references: [id])
+   /// @FieldType('Scalars.GraphQLUUID')
+   authorId       String    @map("author_id") @db.Uuid
+   defaultImage   Image?    @relation("PostToDefaultImage", fields: [defaultImageId], references: [id])
+   defaultImageId Int?      @map("default_image_id")
+   images         Image[]
+   videos         Video[]
+   createdAt      DateTime  @default(now()) @map("created_at")
+   updatedAt      DateTime  @updatedAt @map("updated_at")
+}
+
+model Image {
+   id             Int      @id @default(autoincrement())
+   /// @Validator.MaxLength(255)
+   title          String   @db.VarChar(255)
+   mimeType       MimeType @default(jpeg) @map("mime_type")
+   /// @FieldType('TD.Base64')
+   data           Bytes
+   laptops        Laptop[]
+   post           Post[]
+   defaultLaptops Laptop[] @relation("LaptopToDefaultImage")
+   defaultPosts   Post[]   @relation("PostToDefaultImage")
+   createdAt      DateTime @default(now()) @map("created_at")
+   updatedAt      DateTime @updatedAt @map("updated_at")
+}
+
+model Video {
+   id        Int      @id @default(autoincrement())
+   /// @Validator.MaxLength(255)
+   title     String   @db.VarChar(255)
+   /// @FieldType('Scalars.GraphQLURL')
+   url       String
+   laptops   Laptop[]
+   post      Post[]
+   createdAt DateTime @default(now()) @map("created_at")
+   updatedAt DateTime @updatedAt @map("updated_at")
+}

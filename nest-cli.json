@@ -1,0 +1,72 @@
+{
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "src",
+  "projects": {
+    "auth-module": {
+      "type": "library",
+      "root": "libs/auth-module",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth-module/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth-module/tsconfig.lib.json"
+      }
+    },
+    "auth": {
+      "type": "library",
+      "root": "libs/auth",
+      "entryFile": "index",
+      "sourceRoot": "libs/auth/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/auth/tsconfig.lib.json"
+      }
+    },
+    "prisma": {
+      "type": "library",
+      "root": "libs/prisma",
+      "entryFile": "index",
+      "sourceRoot": "libs/prisma/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/prisma/tsconfig.lib.json"
+      }
+    },
+    "interface": {
+      "type": "library",
+      "root": "libs/interface",
+      "entryFile": "index",
+      "sourceRoot": "libs/interface/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/interface/tsconfig.lib.json"
+      }
+    },
+    "api-config": {
+      "type": "library",
+      "root": "libs/api-config",
+      "entryFile": "index",
+      "sourceRoot": "libs/api-config/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/api-config/tsconfig.lib.json"
+      }
+    },
+    "casl": {
+      "type": "library",
+      "root": "libs/casl",
+      "entryFile": "index",
+      "sourceRoot": "libs/casl/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/casl/tsconfig.lib.json"
+      }
+    },
+    "logger": {
+      "type": "library",
+      "root": "libs/logger",
+      "entryFile": "index",
+      "sourceRoot": "libs/logger/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/logger/tsconfig.lib.json"
+      }
+    }
+  },
+  "compilerOptions": {
+    "webpack": true
+  }
+}

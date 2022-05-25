@@ -1,0 +1,1 @@
+ts-node ./data/index.ts
