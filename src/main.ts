@@ -1,18 +1,29 @@
 import fastifyCookie from '@fastify/cookie'
-import fastifyCors from '@fastify/cors'
 import { LoggerService } from '@libs/logger'
+import { HttpsOptions } from '@nestjs/common/interfaces/external/https-options.interface'
 import { ConfigService } from '@nestjs/config'
 import { NestFactory } from '@nestjs/core'
 import { NestFastifyApplication } from '@nestjs/platform-fastify'
+import { readFileSync } from 'fs-extra'
 import { address } from 'ip'
+import { join } from 'path'
 import { AppModule } from '~/app.module'
 import { fastifyAdapter } from '~/config'
-import { Env, System } from '~/interface'
+import { Env, NodeEnv, System } from '~/interface'
 
 async function bootstrap() {
+   const httpsOptions: HttpsOptions | undefined =
+      process.env.NODE_ENV === NodeEnv.PRODUCTION
+         ? undefined
+         : {
+              cert: readFileSync(join(process.cwd(), 'src/ssl/cert.pem')),
+              key: readFileSync(join(process.cwd(), 'src/ssl/key.pem')),
+         }
+   
    const app = await NestFactory.create<NestFastifyApplication>(
       AppModule,
-      fastifyAdapter
+      fastifyAdapter,
+      { httpsOptions }
    )
 
    const logger = app.get(LoggerService)
